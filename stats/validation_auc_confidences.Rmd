@@ -1,0 +1,106 @@
+---
+title: "AUC Confidences"
+author: "Pranav Rajpurkar"
+date: '2018-09-05'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+For table 3 of the figure:
+* To report the 95\% two-sided confidence intervals of the AUC using the non-parametric method by DeLong.
+* For each pathology, we also test whether the AUC of the best approach is significantly better than the AUC of the worst approach using the one-sided DeLong's test for two correlated ROC curves if their difference in AUC is at least 0.01.
+* We control for multiple hypothesis testing using the Benjamini-Hochberg procedure
+
+
+# Setup
+requires libraries 'pROC' and 'xtable'
+```{r}
+library(pROC)
+library(xtable)
+```
+
+
+# Data Setup
+```{r}
+pathologies <- c("Atelectasis",
+                 "Cardiomegaly",
+                 "Consolidation",
+                 "Edema",
+                 "Pleural Effusion")
+n_pathologies <- length(pathologies)
+
+approaches <- c("U.Ignore", "U.Zeros", "U.Ones", "U.Mean", "U.SelfTrained", "U.MultiClass")
+n_approaches <- length(approaches)
+
+aucs <- matrix(nrow=n_approaches, ncol=n_pathologies, byrow = TRUE)
+aucs_strings <- matrix(nrow=n_approaches, ncol=n_pathologies, byrow = TRUE,
+                       dimnames=list(approaches, pathologies))
+p_values_top <- vector(mode="list", length=n_pathologies)
+names(p_values_top) <- pathologies
+```
+
+# Compute AUC
+```{r}
+indir <- "./data/"
+for (path_index in 1:n_pathologies) {
+  pathology = pathologies[path_index]
+  fn <- paste0(indir,paste0(pathology, ".csv"))
+  df <- read.csv(fn)
+
+  rocs <- vector(mode="list", length=n_pathologies)
+  
+  for (i in 1:n_approaches) {
+    rocs[[i]] <- roc(df$Groundtruth, as.numeric(unlist(df[approaches[i]])))
+  }
+  
+  for (i in 1:n_approaches) {
+    auc <- ci.auc(rocs[[i]])
+    aucs[[i, path_index]] <- auc[2] # the mean
+    # save format "auc (auc_lower,auc_upper)"
+    aucs_strings[[i, path_index]] <- paste0(
+                format(round(auc[2], 3), nsmall = 3), " (",
+                format(round(auc[1], 3), nsmall = 3), ",", 
+                format(round(auc[3], 3), nsmall = 3), ")")
+  }
+  
+  # compute the best and worst auc across approaches
+  max_auc = max(aucs[,path_index])
+  min_auc = min(aucs[,path_index])
+  
+  p_values <- matrix(nrow=n_approaches, ncol=n_approaches, byrow = TRUE)
+  
+  # do the paired test only to test that greatest > smallest 
+  # and when greatest - smallest > 0.01
+  for (i in 1:n_approaches) {
+    for (j in 1:n_approaches) {
+      if (aucs[i, path_index] > (aucs[j, path_index] + 0.01)) {
+        if (aucs[i, path_index] == max_auc & aucs[j, path_index] == min_auc) {
+            test = roc.test(rocs[[i]], rocs[[j]], alternative='greater', paired=TRUE)
+            p_values[[i,j]]  <- test$p.value
+        }
+      } else {
+        p_values[[i,j]] <- NA
+      }
+    }
+  }
+  p_values_top[[path_index]] <- p_values
+}
+
+# print the auc table
+print("AUC table")
+print(xtable(aucs_strings))
+
+# Compute p_values per pathology
+print(p_values_top)
+```
+
+# Adjust P Values
+```{r}
+# the adjusted pvalues
+p_values_top_vector <- na.omit(as.vector(unlist(p_values_top)))
+p_values_adjusted <- p.adjust(p_values_top_vector, method = "hochberg")
+print(p_values_adjusted)
+```
+

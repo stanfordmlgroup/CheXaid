@@ -1,0 +1,17 @@
+.DS_Store
+.idea/
+.ipynb_checkpoints/
+data/
+*.pyc
+ckpts/
+logs/
+results/
+*/__pycache__/
+__pycache__/
+*/__pycache__/*
+cache/
+*.csv
+*.txt
+.eval/
+*.out
+pretrainedmodels
