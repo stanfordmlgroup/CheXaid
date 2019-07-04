@@ -1,4 +1,4 @@
-import pretrainedmodels
+# import pretrainedmodels
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -52,54 +52,54 @@ class PretrainedModel(nn.Module):
         return param_groups
 
 
-class CadeneModel(PretrainedModel):
-    """Models from Cadene's GitHub page of pretrained networks:
-        https://github.com/Cadene/pretrained-models.pytorch
-    """
-    def __init__(self, model_name, task_sequence, model_args):
-        super(CadeneModel, self).__init__()
+# class CadeneModel(PretrainedModel):
+#     """Models from Cadene's GitHub page of pretrained networks:
+#         https://github.com/Cadene/pretrained-models.pytorch
+#     """
+#     def __init__(self, model_name, task_sequence, model_args):
+#         super(CadeneModel, self).__init__()
 
-        self.task_sequence = task_sequence
-        self.model_uncertainty = model_args.model_uncertainty
+#         self.task_sequence = task_sequence
+#         self.model_uncertainty = model_args.model_uncertainty
 
-        self.model = pretrainedmodels.__dict__[model_name](num_classes=1000, pretrained='imagenet')
-        self.pool = nn.AdaptiveAvgPool2d(1)
-        num_ftrs = self.model.last_linear.in_features
-        if self.model_uncertainty:
-            num_outputs = 3 * len(task_sequence)
-        elif self.frontal_lateral:
-            num_outputs = 1
-        else:
-            num_outputs = len(task_sequence)
-        self.fc = nn.Linear(num_ftrs, num_outputs)
+#         self.model = pretrainedmodels.__dict__[model_name](num_classes=1000, pretrained='imagenet')
+#         self.pool = nn.AdaptiveAvgPool2d(1)
+#         num_ftrs = self.model.last_linear.in_features
+#         if self.model_uncertainty:
+#             num_outputs = 3 * len(task_sequence)
+#         elif self.frontal_lateral:
+#             num_outputs = 1
+#         else:
+#             num_outputs = len(task_sequence)
+#         self.fc = nn.Linear(num_ftrs, num_outputs)
 
-    def forward(self, x_list):
-        # x = x_list[0]
-        with torch.autograd.set_detect_anomaly(True):
-            x = self.model.features(x_list[0]).clone()
-            x = F.relu(x, inplace=True)
-            x = self.pool(x).view(x.size(0), -1)
-            if len(x_list[1][0]) > 0:
-                x_list[1] = x_list[1].float()
-                x = self.fc(torch.cat((x, x_list[1]), 1))
-            else:
-                x = self.fc(x)
-            return x
+#     def forward(self, x_list):
+#         # x = x_list[0]
+#         with torch.autograd.set_detect_anomaly(True):
+#             x = self.model.features(x_list[0]).clone()
+#             x = F.relu(x, inplace=True)
+#             x = self.pool(x).view(x.size(0), -1)
+#             if len(x_list[1][0]) > 0:
+#                 x_list[1] = x_list[1].float()
+#                 x = self.fc(torch.cat((x, x_list[1]), 1))
+#             else:
+#                 x = self.fc(x)
+#             return x
 
-    def covariates_wrapper(self, len_task_sequence, model_args):
-        if len(model_args.covar_list) > 0:
-            num_ftrs = self.fc.in_features + len(
-                model_args.covar_list.split(';'))
-        else:
-            num_ftrs = self.fc.in_features
-        if self.model_uncertainty:
-            num_outputs = 3 * len_task_sequence
-        elif self.frontal_lateral:
-            num_outputs = 1
-        else:
-            num_outputs = len_task_sequence
+#     def covariates_wrapper(self, len_task_sequence, model_args):
+#         if len(model_args.covar_list) > 0:
+#             num_ftrs = self.fc.in_features + len(
+#                 model_args.covar_list.split(';'))
+#         else:
+#             num_ftrs = self.fc.in_features
+#         if self.model_uncertainty:
+#             num_outputs = 3 * len_task_sequence
+#         elif self.frontal_lateral:
+#             num_outputs = 1
+#         else:
+#             num_outputs = len_task_sequence
 
-        self.fc = nn.Linear(num_ftrs, num_outputs)
+#         self.fc = nn.Linear(num_ftrs, num_outputs)
 
 
 class TorchVisionModel(PretrainedModel):
@@ -223,41 +223,41 @@ class Inceptionv3(TorchVisionModel):
         super(Inceptionv3, self).__init__(models.densenet121, task_sequence, model_args)
 
 
-class Inceptionv4(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(Inceptionv4, self).__init__('inceptionv4', task_sequence, model_args)
+# class Inceptionv4(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(Inceptionv4, self).__init__('inceptionv4', task_sequence, model_args)
 
 
-class ResNet18(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(ResNet18, self).__init__('resnet18', task_sequence, model_args)
+# class ResNet18(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(ResNet18, self).__init__('resnet18', task_sequence, model_args)
 
 
-class ResNet34(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(ResNet34, self).__init__('resnet34', task_sequence, model_args)
+# class ResNet34(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(ResNet34, self).__init__('resnet34', task_sequence, model_args)
 
 
-class ResNeXt101(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(ResNeXt101, self).__init__('resnext101_64x4d', task_sequence, model_args)
+# class ResNeXt101(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(ResNeXt101, self).__init__('resnext101_64x4d', task_sequence, model_args)
 
 
-class NASNetA(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(NASNetA, self).__init__('nasnetalarge', task_sequence, model_args)
+# class NASNetA(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(NASNetA, self).__init__('nasnetalarge', task_sequence, model_args)
 
 
-class MNASNet(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(MNASNet, self).__init__('nasnetamobile', task_sequence, model_args)
+# class MNASNet(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(MNASNet, self).__init__('nasnetamobile', task_sequence, model_args)
 
 
-class SENet154(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(SENet154, self).__init__('senet154', task_sequence, model_args)
+# class SENet154(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(SENet154, self).__init__('senet154', task_sequence, model_args)
 
 
-class SEResNeXt101(CadeneModel):
-    def __init__(self, task_sequence, model_args):
-        super(SEResNeXt101, self).__init__('se_resnext101_32x4d', task_sequence, model_args)
+# class SEResNeXt101(CadeneModel):
+#     def __init__(self, task_sequence, model_args):
+#         super(SEResNeXt101, self).__init__('se_resnext101_32x4d', task_sequence, model_args)
