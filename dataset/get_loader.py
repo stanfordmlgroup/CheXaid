@@ -1,9 +1,9 @@
 import torch.utils.data as data
 
 from .concat_dataset import ConcatDataset
-from .su_dataset import SUDataset
-from .nih_dataset import NIHDataset
-from .tcga_dataset import TCGADataset
+# from .su_dataset import SUDataset
+# from .nih_dataset import NIHDataset
+# from .tcga_dataset import TCGADataset
 from .cxr_dataset import CXRDataset
 from .label_mapper import TASK_SEQUENCES
 from .pad_collate import PadCollate
@@ -53,41 +53,42 @@ def get_loader(data_args,
         study_level = data_args.train_on_studies
 
     datasets = []
-    if su_frac != 0:
-        datasets.append(
-                SUDataset(
-                    data_args.su_data_dir,
-                    transform_args, split=split,
-                    is_training=is_training,
-                    tasks_to=task_sequence,
-                    frac=su_frac,
-                    study_level=study_level,
-                    frontal_lateral=frontal_lateral,
-                    toy=data_args.toy,
-                    return_info_dict=return_info_dict
-                    )
-                )
+    # if su_frac != 0:
+    #     datasets.append(
+    #             SUDataset(
+    #                 data_args.su_data_dir,
+    #                 transform_args, split=split,
+    #                 is_training=is_training,
+    #                 tasks_to=task_sequence,
+    #                 frac=su_frac,
+    #                 study_level=study_level,
+    #                 frontal_lateral=frontal_lateral,
+    #                 toy=data_args.toy,
+    #                 return_info_dict=return_info_dict
+    #                 )
+    #             )
 
-    if nih_frac != 0:
-        datasets.append(
-                NIHDataset(
-                    data_args.nih_data_dir,
-                    transform_args, split=split,
-                    is_training=is_training,
-                    tasks_to=task_sequence,
-                    frac=nih_frac,
-                    toy=data_args.toy
-                    )
-                )
-    if tcga_frac != 0:
-        datasets.append(
-                TCGADataset(
-                    data_args.tcga_data_dir, transform_args,
-                    data_args.tcga_meta, split=split,
-                    is_training=is_training, toy=data_args.toy,
-                    tasks_to=task_sequence
-                    )        
-                )
+    # if nih_frac != 0:
+    #     datasets.append(
+    #             NIHDataset(
+    #                 data_args.nih_data_dir,
+    #                 transform_args, split=split,
+    #                 is_training=is_training,
+    #                 tasks_to=task_sequence,
+    #                 frac=nih_frac,
+    #                 toy=data_args.toy
+    #                 )
+    #             )
+
+    # if tcga_frac != 0:
+    #     datasets.append(
+    #             TCGADataset(
+    #                 data_args.tcga_data_dir, transform_args,
+    #                 data_args.tcga_meta, split=split,
+    #                 is_training=is_training, toy=data_args.toy,
+    #                 tasks_to=task_sequence
+    #                 )        
+    #             )
 
     for cxr_ds in ['pocus', 'hocus', 'pulm']:
         if cxr_ds in cxr_frac.keys() and cxr_frac[cxr_ds] != 0:
@@ -159,76 +160,75 @@ def get_eval_loaders(data_args, transform_args, task_sequence, batch_size,
 
     eval_loaders = []
 
-    if data_args.eval_su:
-        eval_loaders += [get_loader(data_args,
-                                    transform_args,
-                                    'valid',
-                                    task_sequence,
-                                    su_frac=1,
-                                    nih_frac=0,
-                                    cxr_frac={},
-                                    tcga_frac=0,
-                                    batch_size=batch_size,
-                                    is_training=False,
-                                    shuffle=False,
-                                    study_level=not frontal_lateral,
-                                    frontal_lateral=frontal_lateral,
-                                    return_info_dict=return_info_dict)]
+    # if data_args.eval_su:
+    #     eval_loaders += [get_loader(data_args,
+    #                                 transform_args,
+    #                                 'valid',
+    #                                 task_sequence,
+    #                                 su_frac=1,
+    #                                 nih_frac=0,
+    #                                 cxr_frac={},
+    #                                 tcga_frac=0,
+    #                                 batch_size=batch_size,
+    #                                 is_training=False,
+    #                                 shuffle=False,
+    #                                 study_level=not frontal_lateral,
+    #                                 frontal_lateral=frontal_lateral,
+    #                                 return_info_dict=return_info_dict)]
 
-    if data_args.eval_nih:
-        eval_loaders += [get_loader(data_args,
-                                    transform_args,
-                                    'train',
-                                    task_sequence,
-                                    su_frac=0,
-                                    nih_frac=1,
-                                    cxr_frac={},
-                                    tcga_frac=0,
-                                    batch_size=batch_size,
-                                    is_training=False,
-                                    shuffle=False,
-                                    study_level=True,
-                                    return_info_dict=return_info_dict),
-                         get_loader(data_args,
-                                    transform_args,
-                                    'valid',
-                                    task_sequence,
-                                    su_frac=0,
-                                    nih_frac=1,
-                                    cxr_frac={},
-                                    tcga_frac=0,
-                                    batch_size=batch_size,
-                                    is_training=False,
-                                    shuffle=False,
-                                    study_level=True,
-                                    return_info_dict=return_info_dict)]
+    # if data_args.eval_nih:
+    #     eval_loaders += [get_loader(data_args,
+    #                                 transform_args,
+    #                                 'train',
+    #                                 task_sequence,
+    #                                 su_frac=0,
+    #                                 nih_frac=1,
+    #                                 cxr_frac={},
+    #                                 tcga_frac=0,
+    #                                 batch_size=batch_size,
+    #                                 is_training=False,
+    #                                 shuffle=False,
+    #                                 study_level=True,
+    #                                 return_info_dict=return_info_dict),
+    #                      get_loader(data_args,
+    #                                 transform_args,
+    #                                 'valid',
+    #                                 task_sequence,
+    #                                 su_frac=0,
+    #                                 nih_frac=1,
+    #                                 cxr_frac={},
+    #                                 tcga_frac=0,
+    #                                 batch_size=batch_size,
+    #                                 is_training=False,
+    #                                 shuffle=False,
+    #                                 study_level=True,
+    #                                 return_info_dict=return_info_dict)]
         
-    if data_args.eval_tcga:
-        eval_loaders += [get_loader(data_args,
-                                    transform_args,
-                                    'train',
-                                    task_sequence,
-                                    su_frac=0,
-                                    nih_frac=0,
-                                    cxr_frac={},
-                                    tcga_frac=1,
-                                    batch_size=batch_size,
-                                    is_training=False,
-                                    shuffle=False,
-                                    return_info_dict=return_info_dict),
-                         get_loader(data_args,
-                                    transform_args,
-                                    'valid',
-                                    task_sequence,
-                                    su_frac=0,
-                                    nih_frac=0,
-                                    cxr_frac={},
-                                    tcga_frac=1,
-                                    batch_size=batch_size,
-                                    is_training=False,
-                                    shuffle=False,
-                                    return_info_dict=return_info_dict)]   
-
+    # if data_args.eval_tcga:
+    #     eval_loaders += [get_loader(data_args,
+    #                                 transform_args,
+    #                                 'train',
+    #                                 task_sequence,
+    #                                 su_frac=0,
+    #                                 nih_frac=0,
+    #                                 cxr_frac={},
+    #                                 tcga_frac=1,
+    #                                 batch_size=batch_size,
+    #                                 is_training=False,
+    #                                 shuffle=False,
+    #                                 return_info_dict=return_info_dict),
+    #                      get_loader(data_args,
+    #                                 transform_args,
+    #                                 'valid',
+    #                                 task_sequence,
+    #                                 su_frac=0,
+    #                                 nih_frac=0,
+    #                                 cxr_frac={},
+    #                                 tcga_frac=1,
+    #                                 batch_size=batch_size,
+    #                                 is_training=False,
+    #                                 shuffle=False,
+    #                                 return_info_dict=return_info_dict)]   
     
     if data_args.eval_pocus or data_args.eval_hocus or data_args.eval_pulm:
         for phase in ['train', 'valid']:
