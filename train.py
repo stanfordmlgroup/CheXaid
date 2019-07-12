@@ -99,8 +99,7 @@ def train(args):
     # Get logger, evaluator and saver
     logger = TrainLogger(logger_args, args.start_epoch, args.num_epochs, args.batch_size,
         len(train_loader.dataset), args.device, normalization=transform_args.normalization)
-    rad_perf = pd.read_csv(data_args.su_rad_perf_path) if data_args.su_rad_perf_path is not None else None
-
+    
     eval_args = {}
     eval_args['num_visuals'] = logger_args.num_visuals
     eval_args['iters_per_eval'] = logger_args.iters_per_eval

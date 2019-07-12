@@ -76,11 +76,6 @@ class BaseArgParser(object):
         # Stanford and NIH dataset
         self.parser.add_argument('--toy', dest='data_args.toy', type=util.str_to_bool, default=False,
                                  help='Use smaller dataset')
-        self.parser.add_argument('--su_data_dir', dest='data_args.su_data_dir', type=str, default='/deep/group/CheXpert/',
-                                 help='Path to Stanford data directory.')
-        self.parser.add_argument('--su_rad_perf_path', dest='data_args.su_rad_perf_path', type=str,
-                                 default=None,
-                                 help='Path to csv containing radiologist performance on Stanford test set.')
         self.parser.add_argument('--pocus_data_dir', dest='data_args.pocus_data_dir', type=str,
                                  default='/deep/group/aihc-bootcamp-fall2018/cxr-tb/data/original/TBPOC_CXR_Neil',
                                  help='Path to Neil Pocus data directory')
@@ -89,20 +84,8 @@ class BaseArgParser(object):
                                  help='Path to Tom Hocus data directory')
         self.parser.add_argument('--pulm_data_dir', dest='data_args.pulm_data_dir', type=str)
         self.parser.add_argument('--pulm_img_dir', dest='data_args.pulm_img_dir', type=str, default=None)
-        self.parser.add_argument('--nih_data_dir', dest='data_args.nih_data_dir', type=str,
-                                 default='/deep/group/rad_data', help='Path to NIH data directory')
-        self.parser.add_argument('--tcga_data_dir', dest='data_args.tcga_data_dir', type=str,
-                                 default='/deep/group/rad_data', help='Path to TCGA data directory')
-        self.parser.add_argument('--tcga_meta', dest='data_args.tcga_meta', type=str,
-                                 default='slide_metadata.csv', help='Path to csv containing metadata for TCGA dataset')
 
         # User will have to set at least one eval_dataset flag to true
-        self.parser.add_argument('--eval_su', dest='data_args.eval_su', type=util.str_to_bool, default=False,
-                                 help='If true, evaluates on Stanford during test and train')
-        self.parser.add_argument('--eval_nih', dest='data_args.eval_nih', type=util.str_to_bool, default=False,
-                                 help='If true, evaluates NIH during test and train')
-        self.parser.add_argument('--eval_tcga', dest='data_args.eval_tcga', type=util.str_to_bool, default=False,
-                                 help='If true, evaluates TCGA during test and train')
         self.parser.add_argument('--eval_pocus', dest='data_args.eval_pocus', type=util.str_to_bool, default=False,
                                  help='If true, evaluates Pocus during test and train')
         self.parser.add_argument('--eval_hocus', dest='data_args.eval_hocus', type=util.str_to_bool, default=False,
@@ -113,11 +96,7 @@ class BaseArgParser(object):
         self.parser.add_argument('--uncertain_map_path', dest='data_args.uncertain_map_path', type=str, default=None,
                                  help='Path to CSV file which will replace the training CSV.')
         self.parser.add_argument('--task_sequence', dest='data_args.task_sequence', type=str, default=None,
-                                 choices=('stanford', 'stanford_exclude_NF',
-                                          'nih', 'su_nih_union', 'pocus', 'hocus', 'pulm',
-                                          'competition', 'single_atelectasis',
-                                          'single_cardiomegaly', 'single_consolidation',
-                                          'single_edema', 'single_pleural_effusion','tcga'),
+                                 choices=('pocus', 'hocus', 'pulm'),
                                  help='Which task sequence to have the model output. This determines how many neurons \
                                  the model will have in its final layer')
         self.parser.add_argument('--fold_num', dest='data_args.fold_num', type=int, default=None,
@@ -127,9 +106,8 @@ class BaseArgParser(object):
         self.has_tasks_missing = None
 
     @staticmethod
-    def are_tasks_missing(task_sequence, eval_su, eval_nih, eval_pocus, eval_hocus, eval_pulm, eval_tcga,
-                          su_train_frac=None, nih_train_frac=None, pocus_train_frac=None,
-                          hocus_train_frac=None, pulm_train_frac=None, tcga_train_frac=None):
+    def are_tasks_missing(task_sequence, eval_pocus, eval_hocus, eval_pulm, pocus_train_frac=None,
+                          hocus_train_frac=None, pulm_train_frac=None):
 
         """Method used to determined if some examples will have tasks for which there is no label
 
@@ -138,24 +116,9 @@ class BaseArgParser(object):
         that we are training on."""
 
         task_sequence = TASK_SEQUENCES[task_sequence]
-        task_seq_su = TASK_SEQUENCES['stanford']
-        task_seq_nih = TASK_SEQUENCES['nih']
-        task_seq_tcga = TASK_SEQUENCES['tcga']
         task_seq_pocus = TASK_SEQUENCES['pocus']
         task_seq_hocus = TASK_SEQUENCES['hocus']
         task_seq_pulm = TASK_SEQUENCES['pulm']
-
-        if eval_su or su_train_frac == 1:
-            if set(task_sequence).issubset(set(task_seq_su)) is False:
-                return True
-
-        if eval_nih or nih_train_frac == 1:
-            if set(task_sequence).issubset(set(task_seq_nih)) is False:
-                return True
-
-        if eval_tcga or tcga_train_frac == 1:
-            if set(task_sequence).issubset(set(task_seq_tcga)) is False:
-                return True
 
         if eval_pocus or pocus_train_frac == 1:
             if set(task_sequence).issubset(set(task_seq_pocus)) is False:
@@ -224,27 +187,18 @@ class BaseArgParser(object):
         if self.is_training:
             args.has_tasks_missing = self.are_tasks_missing(
                                             args.data_args.task_sequence,
-                                            args.data_args.eval_su,
-                                            args.data_args.eval_nih,
                                             args.data_args.eval_pocus,
                                             args.data_args.eval_hocus,
                                             args.data_args.eval_pulm,
-                                            args.data_args.eval_tcga,
-                                            args.data_args.su_train_frac,
-                                            args.data_args.nih_train_frac,
                                             args.data_args.pocus_train_frac,
                                             args.data_args.hocus_train_frac,
-                                            args.data_args.pulm_train_frac,
-                                            args.data_args.tcga_train_frac)
+                                            args.data_args.pulm_train_frac)
         else:
             args.has_tasks_missing = self.are_tasks_missing(
                                             args.data_args.task_sequence,
-                                            args.data_args.eval_su,
-                                            args.data_args.eval_nih,
                                             args.data_args.eval_pocus,
                                             args.data_args.eval_hocus,
-                                            args.data_args.eval_pulm,
-                                            args.data_args.eval_tcga)
+                                            args.data_args.eval_pulm)
             # Get model args
             ckpt_paths = []
             if args.model_args.ckpt_path:
@@ -315,29 +269,12 @@ class BaseArgParser(object):
 
         # Make sure the best_ckpt_metric is the right one
         if args.is_training:
-            if args.data_args.eval_su and not args.data_args.eval_nih:
-
-                assert(args.logger_args.metric_name in ['stanford-valid_loss', 'stanford-train-dev_loss',
-                                            'stanford-valid_5loss', 'stanford-valid_competition_avg_AUROC'])
-
-            if args.data_args.eval_nih and not args.data_args.eval_su:
-                assert(args.logger_args.metric_name in ['nih-valid_weighted_loss', 'nih-valid_loss'])
-
-            if args.data_args.eval_nih and args.data_args.eval_su:
-                print(f'Watch out: You are evaluating on both NIH and Stanford and your metric_name is {args.logger_args.metric_name}.')
-
             assert ('loss' in args.logger_args.metric_name and not args.logger_args.maximize_metric) or\
                    ('AUROC' in args.logger_args.metric_name and args.logger_args.maximize_metric) or\
                    ('accuracy' in args.logger_args.metric_name and args.logger_args.maximize_metric)
 
         # Save dataset name to data_args
-        if args.data_args.eval_su:
-            args.data_args.dataset_name = 'stanford'
-        elif args.data_args.eval_nih:
-            args.data_args.dataset_name = 'nih'
-        elif args.data_args.eval_tcga:
-            args.data_args.dataset_name = 'tcga'
-        elif args.data_args.eval_pocus:
+        if args.data_args.eval_pocus:
             args.data_args.dataset_name = 'pocus'
         elif args.data_args.eval_hocus:
             args.data_args.dataset_name = 'hocus'
