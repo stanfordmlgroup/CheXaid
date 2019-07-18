@@ -19,11 +19,11 @@ def get_auto_args(parser):
 
         data_args = {
             # data params
-            'data_args.pulm_data_dir': '/deep/group/aihc-bootcamp-fall2018/cxr-tb/data/original_cropped/split_4/',
-
+            # 'data_args.pulm_data_dir': '/deep/group/aihc-bootcamp-fall2018/cxr-tb/data/original_cropped/split_4/',
+            'data_args.pulm_data_dir': './',
             'data_args.eval_pulm': True,
             'data_args.task_sequence': 'pulm',
-            'data_args.fold_num': np.random.randint(0, 5),
+            'data_args.fold_num': 0,
 
             'transform_args.normalization': 'cxr_pulm_tb_norm',
             'transform_args.scale': 320,

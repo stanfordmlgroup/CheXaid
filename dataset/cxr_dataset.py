@@ -108,13 +108,6 @@ class CXRDataset(BaseDataset):
         for i, disease in enumerate(diseases):
             labels[:, i] = label_df[disease].tolist()
 
-        # if True:
-        #     tb_labels = np.reshape(labels[:, 0], [num_data_points, 1])
-        #     findings_labels = labels[:, 1:]
-        #     # print(tb_labels.shape)
-        #     tb_labels = np.tile(tb_labels, (1, num_labels-1))
-        #     # print(tb_labels.shape, findings_labels.shape)
-        #     labels = np.concatenate((tb_labels, findings_labels), 1)
         return labels
 
     def get_covariates(self):
