@@ -2,7 +2,7 @@ Code for `CheXaid: Deep Learning Assistance for Physician Diagnosis of Tuberculo
 
 This is a deep learning model developed by Stanford Machine Learning Group (stanfordmlgroup.github.io) to help physicians detect Tuberculosis (TB) among patients with HIV infection using their Chest X-Rays. 
 
-In order to train the model, the train data directory and other hyperparameters can be set in `util/hypersearch.py`. This includes information about the pretrained model to use for transfer learning (checkpoint paths, number of original classes), data args (task sequence, number of the fold to train and validate on for k-fold cross validation, image transformations), model args (model to be used, list of covariates, loss function), optimizer args and logger args. More details about these can be found in `args/`.
+In order to train the model, the train data directory and other hyperparameters can be set in `util/hypersearch.py`. By default, the training data directory is set to be `dummy/`, which has 128 randomly generated images. The `util/hypersearch.py` script includes information about the pretrained model to use for transfer learning (checkpoint paths, number of original classes), data args (task sequence, number of the fold to train and validate on for k-fold cross validation, image transformations), model args (model to be used, list of covariates, loss function), optimizer args and logger args. More details about these can be found in `args/`.
 
 
 After properly setting them, the training script can be run as:
