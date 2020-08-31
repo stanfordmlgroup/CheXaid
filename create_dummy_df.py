@@ -31,5 +31,5 @@ if __name__ == '__main__':
     dev_df = df.iloc[64:96]
     test_df = df.iloc[96:]
     train_df.to_csv("train_data_0.csv")
-    dev_df.to_csv("dev_data_0.csv")
+    dev_df.to_csv("valid_data_0.csv")
     test_df.to_csv("test_data.csv")

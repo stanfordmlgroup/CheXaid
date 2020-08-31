@@ -11,7 +11,7 @@ import random
 def get_auto_args(parser):
     def get_data_args():
         pretrained_model_dict = {
-                'ckpt_path': '/deep/group/xray4all/final_ckpts/DenseNet121_320_1e-04_uncertainty_ones_top10/iter_638400.pth.tar',
+                'ckpt_path': '',
                 'transform_classifier': True,
                 'n_orig_classes': 7,
                 'model': 'DenseNet121',
@@ -19,7 +19,6 @@ def get_auto_args(parser):
 
         data_args = {
             # data params
-            # 'data_args.pulm_data_dir': '/deep/group/aihc-bootcamp-fall2018/cxr-tb/data/original_cropped/split_4/',
             'data_args.pulm_data_dir': './',
             'data_args.eval_pulm': True,
             'data_args.task_sequence': 'pulm',
