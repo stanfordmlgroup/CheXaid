@@ -1,4 +1,4 @@
-name: chexpert
+name: chexaid
 channels:
   - anaconda
   - pytorch
