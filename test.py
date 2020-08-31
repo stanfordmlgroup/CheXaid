@@ -13,7 +13,7 @@ from eval import get_evaluator
 from models import CSVReaderModel, MultiModelWrapper, EnsembleModel
 from saver import ModelSaver
 from predict import get_config
-from scripts.get_cams import save_grad_cams
+# from scripts.get_cams import save_grad_cams
 
 
 NAN = np.nan

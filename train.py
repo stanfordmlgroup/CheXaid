@@ -24,7 +24,6 @@ def train(args):
         5. Get logger, evaluator, and saver.
         6. Run training loop, evaluate and save model periodically.
     """
-
     model_args = args.model_args
     logger_args = args.logger_args
     optim_args = args.optim_args

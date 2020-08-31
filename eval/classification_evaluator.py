@@ -163,8 +163,8 @@ class ClassificationEvaluator(BaseEvaluator):
         """
         metrics, curves = {}, {}
 
-        probs = np.concatenate(probs)
-        keys = np.concatenate(keys)
+        probs = torch.cat(probs)
+        keys = torch.cat(keys)
         data_subset = f'{dataset_name}-{split}'
 
         # Load the dataset classes, and the classes the model outputs values for.
@@ -183,7 +183,7 @@ class ClassificationEvaluator(BaseEvaluator):
             task_name = tasks[i]
 
 
-            task_keys, task_probs = np.array(task_keys), np.array(task_probs)
+            task_keys, task_probs = np.array(task_keys.cpu()), np.array(task_probs.cpu())
             task_preds = (task_probs > 0.5)
 
             '''
