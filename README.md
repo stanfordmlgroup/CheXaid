@@ -8,14 +8,20 @@ By default, the training data directory is set to be `dummy/`, which has 128 ran
 ## Prerequisites
 This code uses python and pytorch. Follow these steps to get started:
 
-1. Create a conda virtual environment
-`conda env create -f environment.yml`
+1. Create a conda virtual environment:
+````
+conda env create -f environment.yml
+````
 
-2. Activate the virtual environment
-`conda activate chexaid`
+2. Activate the virtual environment:
+````
+conda activate chexaid
+````
 
-3. If using dummy data: create dummy data dataframe
-`python create_dummy_df.py`
+3. If using dummy data: create dummy data dataframe:
+````
+python create_dummy_df.py
+````
 
 ## Training
 
@@ -50,4 +56,7 @@ python test.py \
 
 Note that the `ckpt_path` argument should point to the checkpoints of the evaluated model. By default, model checkpoints will be saved following the format: `ckpts/new_gt_<timestamp>/<checkpoint name>.pth.tar`
 
+
+## Citing
+If you are using this code, please cite our paper: `CheXaid: Deep Learning Assistance for Physician Diagnosis of Tuberculosis using Chest X-Rays in Patients with HIV`.
 
