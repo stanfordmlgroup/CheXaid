@@ -9,10 +9,10 @@ This is a deep learning model developed by [Stanford Machine Learning Group](htt
 - [Data](#data)
 - [Training](#training)
 - [Model Evaluation](#evaluation)
+- [License](#license)
 - [Citing](#citing)
 
 ---
-
 <a name="prereqs"></a>
 
 ## Prerequisites
@@ -33,11 +33,13 @@ conda activate chexaid
 python create_dummy_df.py
 ````
 
+---
 <a name="data"></a>
 
 ## Data
 By default, the training data directory is set to be `dummy/`, which has 128 randomly generated images. You can replace it with your own data.
 
+---
 <a name="training"></a>
 
 ## Training
@@ -58,6 +60,7 @@ python train.py \
        --num_epochs=10
 ```
 
+---
 <a name="evaluation"></a>
 
 ## Model Evaluation
@@ -75,6 +78,14 @@ python test.py \
 
 Note that the `ckpt_path` argument should point to the checkpoints of the evaluated model. By default, model checkpoints will be saved following the format: `ckpts/new_gt_<timestamp>/<checkpoint name>.pth.tar`
 
+---
+<a name="license"></a>
+
+## License
+
+This repository is made publicly available under the MIT License.
+
+---
 <a name="citing"></a>
 
 ## Citing
