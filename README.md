@@ -1,9 +1,19 @@
-Code for `CheXaid: Deep Learning Assistance for Physician Diagnosis of Tuberculosis using Chest X-Rays in Patients with HIV`.
+# CheXaid
+This repo contains code accompaning the paper [`CheXaid: Deep Learning Assistance for Physician Diagnosis of Tuberculosis using Chest X-Rays in Patients with HIV`](https://www.nature.com/articles/s41746-020-00322-2).
 
-This is a deep learning model developed by Stanford Machine Learning Group (stanfordmlgroup.github.io) to help physicians detect Tuberculosis (TB) among patients with HIV infection using their Chest X-rays. 
+This is a deep learning model developed by [Stanford Machine Learning Group](https://stanfordmlgroup.github.io/) to help physicians detect Tuberculosis (TB) among patients with HIV infection using their Chest X-rays. 
 
-## Data
-By default, the training data directory is set to be `dummy/`, which has 128 randomly generated images. You can replace it with your own data.
+### Table of Contents
+
+- [Prerequisites](#prereqs)
+- [Data](#data)
+- [Training](#training)
+- [Model Evaluation](#evaluation)
+- [Citing](#citing)
+
+---
+
+<a name="prereqs"></a>
 
 ## Prerequisites
 This code uses python and pytorch. Follow these steps to get started:
@@ -23,6 +33,13 @@ conda activate chexaid
 python create_dummy_df.py
 ````
 
+<a name="data"></a>
+
+## Data
+By default, the training data directory is set to be `dummy/`, which has 128 randomly generated images. You can replace it with your own data.
+
+<a name="training"></a>
+
 ## Training
 
 To train a model with the default parameters run:
@@ -41,7 +58,9 @@ python train.py \
        --num_epochs=10
 ```
 
-## Evaluating model
+<a name="evaluation"></a>
+
+## Model Evaluation
 In order to test a model that has been trained as above, the test script can be run as:
 
 ```
@@ -56,7 +75,21 @@ python test.py \
 
 Note that the `ckpt_path` argument should point to the checkpoints of the evaluated model. By default, model checkpoints will be saved following the format: `ckpts/new_gt_<timestamp>/<checkpoint name>.pth.tar`
 
+<a name="citing"></a>
 
 ## Citing
-If you are using this code, please cite our paper: `CheXaid: Deep Learning Assistance for Physician Diagnosis of Tuberculosis using Chest X-Rays in Patients with HIV`.
+If you are using this code, please cite our paper: 
+```
+@article{rajpurkar2020chexaid,
+  title = {CheXaid: deep learning assistance for physician diagnosis of tuberculosis using chest x-rays in patients with HIV},
+  author = {Pranav Rajpurkar and Chloe O'Connell and Amit Schechter and Nishit Asnani and Jason Li and Amirhossein Kiani and Robyn L. Ball and Marc Mendelson and Gary Maartens and Daniël J. van Hoving and Rulan Griesel and Andrew Y. Ng and Tom H. Boyles and Matthew P. Lungren},
+  journal = {npj Digital Medicine},
+  volume = {3},
+  number = {1},
+  doi = {10.1038/s41746-020-00322-2},
+  year = {2020},
+  publisher = {Nature Publishing Group}
+}
+```
+
 
